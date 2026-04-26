@@ -24,3 +24,10 @@ docker compose up -d --build
 podman compose up -d  --build
 ```
 
+## Migraciones
+
+Si necesitas aplicar las migraciones manualmente:
+
+```bash
+dotnet ef database update -p api/api.csproj
+```
