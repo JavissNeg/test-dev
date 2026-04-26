@@ -1,0 +1,41 @@
+@baseUrl = https://localhost:7151
+
+### GET all logins
+GET {{baseUrl}}/logins
+
+### POST new login
+POST {{baseUrl}}/logins
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "extension": 100,
+  "movementType": 1,
+  "date": "2026-04-26T10:00:00"
+}
+
+### POST new logout
+POST {{baseUrl}}/logins
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "extension": 100,
+  "movementType": 0,
+  "date": "2026-04-26T18:00:00"
+}
+
+### PUT update login
+PUT {{baseUrl}}/logins/1
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "extension": 105,
+  "movementType": 1,
+  "date": "2026-04-26T09:30:00"
+}
+
+### DELETE login
+DELETE {{baseUrl}}/logins/1
+

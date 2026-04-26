@@ -31,3 +31,29 @@ Si necesitas aplicar las migraciones manualmente:
 ```bash
 dotnet ef database update -p api/api.csproj
 ```
+
+## Pruebas Unitarias
+
+### Ejecutar todas las pruebas
+
+```bash
+ dotnet test TestDevBackJR.Tests/TestDevBackJR.Tests.csproj
+```
+
+### Ejecutar pruebas con detalles verbosos
+
+```bash
+dotnet test -v normal
+```
+
+### Ejecutar pruebas del proyecto específicamente
+
+```bash
+dotnet test TestDevBackJR.Tests/TestDevBackJR.Tests.csproj
+```
+
+### Ejecutar una prueba específica
+
+```bash
+dotnet test --filter "FullyQualifiedName~LoginsControllerTests.Get_ReturnsOkResult_WithLoginsList"
+```
