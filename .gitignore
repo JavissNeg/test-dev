@@ -1,0 +1,81 @@
+# .NET
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.userprefs
+*.suo
+*.sln.docstates
+appsettings.local.json
+appsettings.*.local.json
+
+# Visual Studio
+.vs/
+.vscode/
+*.code-workspace
+
+# Rider
+.idea/
+*.sln.iml
+*.swp
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+
+# NuGet
+*.nuget.props
+*.nuget.targets
+.nuget/
+
+# Entity Framework
+Migrations/
+
+# Local database files
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Docker volumes (local development)
+sql_data/
+postgres_data/
+*.mdf
+*.ldf
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Environment files
+.env
+.env.local
+
+# IDE temporary files
+*.tmp
+*.bak
+*~
+
+# Local testing and temporary files
+*.trx
+TestResults/
+
+# Coverage reports
+coverage/
+opencover/
+
+# Package manager lock files (optional - uncomment if you want to commit them)
+# packages.lock.json
+
+# Entity Framework migrations (if keeping in repo, comment this out)
+# Migrations/

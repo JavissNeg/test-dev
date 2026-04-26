@@ -1,0 +1,28 @@
+﻿version: "3.9"
+
+services:
+  api:
+    image: api
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=master;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P4ssw@rd
+    volumes:
+      - sql_data:/var/opt/mssql
+
+volumes:
+  sql_data:
