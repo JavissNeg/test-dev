@@ -63,6 +63,15 @@ API disponible en: `https://localhost:7151`
 | Contraseña | `P4ssw@rd` |
 | Database | Generada automáticamente |
 
+### Scripts SQL
+
+| Script     | Uso |
+|------------|-----|
+| `seed.sql` | Poblar la base de datos con datos iniciales. |
+| `avg_login_time_monthly.sql` | Reporte de tiempo promedio de login por mes. |
+| `max_login_time.sql` | Reporte de tiempo maximo de login. |
+| `min_login_time.sql` | Reporte de tiempo minimo de login. |
+
 ---
 
 ## 📡 Endpoints
