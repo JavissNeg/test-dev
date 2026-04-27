@@ -1,59 +1,123 @@
-# Prueba práctica en .NET y SQL Server
+# Test Dev - API  
 
-## Levantar servicio de SQL Server 
+API REST para gestión de logins y sesiones de usuarios.
 
-### Docker
+---
+
+## 🛠️ Stack Tecnológico
+
+- **.NET 10** - Framework backend
+- **Entity Framework Core** - ORM
+- **SQL Server** - Base de datos
+- **xUnit** - Testing
+- **Moq** - Mocking
+- **Docker/Podman** - Containerización
+
+---
+
+## 📋 Requisitos Previos
+
+- .NET 10 SDK
+- Docker o Podman
+- Puerto 7151 disponible (API)
+- Puerto 1433 disponible (SQL Server)
+
+---
+
+## 🚀 Instalación
+
+### 1. Clonar repositorio
+```bash
+git clone https://github.com/JavissNeg/test-dev.git
+cd testdevbackjr
+```
+
+### 2. Levantar SQL Server
+
+**Docker:**
 ```bash
 docker compose up -d sqlserver
 ```
 
-### Podman
+**Podman:**
 ```bash
 podman compose up -d sqlserver
 ```
 
-## Levantar todos los servicios
-
-### Docker
+### 3. Ejecutar API
 ```bash
-docker compose up -d --build
+cd api
+dotnet run
 ```
 
-### Podman
-```bash
-podman compose up -d  --build
+API disponible en: `https://localhost:7151`
+
+---
+
+## 🗄️ Conexión a Base de Datos
+
+| Parámetro | Valor |
+|-----------|-------|
+| Host | `localhost:1433` |
+| Usuario | `sa` |
+| Contraseña | `P4ssw@rd` |
+| Database | Generada automáticamente |
+
+---
+
+## 📡 Endpoints
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/logins` | Obtener todos los logins |
+| POST | `/logins` | Crear nuevo login |
+| PUT | `/logins/{id}` | Actualizar login |
+| DELETE | `/logins/{id}` | Eliminar login |
+
+### Ejemplo
+```http
+POST https://localhost:7151/logins
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "extension": 100,
+  "movementType": 1,
+  "date": "2026-04-26T10:00:00"
+}
 ```
 
-## Migraciones
+---
 
-Si necesitas aplicar las migraciones manualmente:
-
-```bash
-dotnet ef database update -p api/api.csproj
-```
-
-## Pruebas Unitarias
-
-### Ejecutar todas las pruebas
-
-```bash
- dotnet test TestDevBackJR.Tests/TestDevBackJR.Tests.csproj
-```
-
-### Ejecutar pruebas con detalles verbosos
-
-```bash
-dotnet test -v normal
-```
-
-### Ejecutar pruebas del proyecto específicamente
+## ✅ Pruebas
 
 ```bash
 dotnet test TestDevBackJR.Tests/TestDevBackJR.Tests.csproj
 ```
 
-### Ejecutar una prueba específica
-
+Prueba específica:
 ```bash
 dotnet test --filter "FullyQualifiedName~LoginsControllerTests.Get_ReturnsOkResult_WithLoginsList"
 ```
+
+---
+
+## 🐳 Orquestación Completa
+
+**Docker:**
+```bash
+docker compose up -d --build
+```
+
+**Podman:**
+```bash
+podman compose up -d --build
+```
+
+Detener:
+```bash
+docker compose down
+# o
+podman compose down
+```
+
