@@ -82,4 +82,28 @@ public class LoginsController(ILoginService loginService) : ControllerBase
             return StatusCode(500, new { message = ex.Message });
         }
     }
+
+    [HttpGet("export/csv")]
+    public async Task<IActionResult> ExportCsv()
+    {
+        try
+        {
+            var report = await loginService.GenerateUserReport();
+
+            var csv = new System.Text.StringBuilder();
+            csv.AppendLine("Username,Full Name,Area,Total Hours");
+
+            foreach (var row in report)
+            {
+                csv.AppendLine($"\"{row.Username}\",\"{row.FullName}\",\"{row.Area}\",{row.TotalHours}");
+            }
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+            return File(bytes, "text/csv", "user_report.csv");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
 }

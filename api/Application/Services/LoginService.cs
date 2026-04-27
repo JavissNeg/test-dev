@@ -61,4 +61,39 @@ public class LoginService(AppDbContext context, LoginValidator validator) : ILog
         await context.SaveChangesAsync();
         return true;
     }
+
+    public async Task<List<UserReportDto>> GenerateUserReport()
+    {
+        var users = await context.Users
+            .Include(u => u.Logins)
+            .Include(u => u.Area)
+            .ToListAsync();
+
+        var report = new List<UserReportDto>();
+
+        foreach (var user in users)
+        {
+            var logins = user.Logins.OrderBy(l => l.Date).ToList();
+            decimal totalHours = 0;
+
+            for (int i = 0; i < logins.Count - 1; i++)
+            {
+                if (logins[i].MovementType == 1 && logins[i + 1].MovementType == 0)
+                {
+                    var duration = logins[i + 1].Date - logins[i].Date;
+                    totalHours += (decimal)duration.TotalHours;
+                }
+            }
+
+            report.Add(new UserReportDto
+            {
+                Username = user.Username,
+                FullName = $"{user.FirstName} {user.LastName} {user.SecondLastName}".Trim(),
+                Area = user.Area?.Name ?? "N/A",
+                TotalHours = Math.Round(totalHours, 2)
+            });
+        }
+
+        return report;
+    }
 }

@@ -9,4 +9,5 @@ public interface ILoginService
     Task<Login> Create(LoginDto dto);
     Task<bool> Update(int id, LoginDto dto);
     Task<bool> Delete(int id);
+    Task<List<UserReportDto>> GenerateUserReport();
 }

@@ -73,6 +73,7 @@ API disponible en: `https://localhost:7151`
 | POST | `/logins` | Crear nuevo login |
 | PUT | `/logins/{id}` | Actualizar login |
 | DELETE | `/logins/{id}` | Eliminar login |
+| GET | `/logins/export/csv` | Descargar reporte CSV |
 
 ### Ejemplo
 ```http
@@ -86,6 +87,16 @@ Content-Type: application/json
   "date": "2026-04-26T10:00:00"
 }
 ```
+
+### Descargar CSV
+
+Asegúrate que la API esté ejecutándose. Luego:
+
+```bash
+curl -k -L https://localhost:7151/logins/export/csv -o user_report.csv
+```
+
+CSV incluye: Username, Full Name, Área, Total Hours
 
 ---
 
