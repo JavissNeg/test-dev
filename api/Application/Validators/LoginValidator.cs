@@ -1,38 +1,79 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using TestDevBackJR.Application.DTOs;
 using TestDevBackJR.Infrastructure.Data;
 
 namespace TestDevBackJR.Application.Validators;
 
-public class LoginValidator(AppDbContext context)
+public class LoginValidator : AbstractValidator<LoginDto>
 {
-    public async Task Validate(LoginDto dto, int? excludeId = null)
+    private readonly AppDbContext _context;
+    private const string ExcludeIdContextKey = "ExcludeId";
+
+    public LoginValidator(AppDbContext context)
     {
-        // Validar MovementType (0 o 1)
-        if (dto.MovementType != 0 && dto.MovementType != 1)
-            throw new InvalidOperationException("MovementType debe ser 0 (logout) o 1 (login)");
+        _context = context;
 
-        // Validar usuario existe
-        var userExists = await context.Users.AnyAsync(u => u.Id == dto.UserId);
-        if (!userExists)
-            throw new InvalidOperationException($"Usuario con ID {dto.UserId} no existe");
+        RuleFor(x => x.MovementType)
+            .Must(m => m == 0 || m == 1)
+            .WithMessage("MovementType debe ser 0 (logout) o 1 (login)");
 
-        // Validar fecha no esté en el futuro
-        if (dto.Date > DateTime.UtcNow)
-            throw new InvalidOperationException("La fecha no puede estar en el futuro");
+        RuleFor(x => x.UserId)
+            .MustAsync(async (userId, cancellation) =>
+                await _context.Users.AnyAsync(u => u.Id == userId, cancellation))
+            .WithMessage("Usuario con ID {PropertyValue} no existe");
 
-        // Obtener último login, excluyendo el registro siendo actualizado
-        var lastLogin = await context.Logins
-            .Where(l => l.UserId == dto.UserId && (excludeId == null || l.Id != excludeId))
+        RuleFor(x => x.Date)
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("La fecha no puede estar en el futuro");
+
+        RuleFor(x => x)
+            .CustomAsync(async (dto, validationContext, cancellation) =>
+            {
+                var sequenceFailure = await GetSequenceValidationFailure(dto, validationContext, cancellation);
+                if (sequenceFailure.HasValue)
+                    validationContext.AddFailure(sequenceFailure.Value.PropertyName, sequenceFailure.Value.Message);
+            });
+    }
+
+    private async Task<(string PropertyName, string Message)?> GetSequenceValidationFailure(
+        LoginDto dto,
+        ValidationContext<LoginDto> validationContext,
+        CancellationToken cancellation)
+    {
+        var excludeId = validationContext.RootContextData.TryGetValue(ExcludeIdContextKey, out var rawExcludeId) &&
+                        rawExcludeId is int parsedExcludeId
+            ? parsedExcludeId
+            : (int?)null;
+
+        var lastLogin = await _context.Logins
+            .AsNoTracking()
+            .Where(l => l.UserId == dto.UserId &&
+                        (excludeId == null || l.Id != excludeId))
             .OrderByDescending(l => l.Date)
-            .FirstOrDefaultAsync();
+            .ThenByDescending(l => l.Id)
+            .FirstOrDefaultAsync(cancellation);
 
-        // Validar secuencia login/logout
-        if (dto.MovementType == 1 && lastLogin != null && lastLogin.MovementType == 1)
-            throw new InvalidOperationException("Ya existe un login sin logout anterior");
+        if (lastLogin == null)
+        {
+            if (dto.MovementType != 1)
+                return (nameof(LoginDto.MovementType), "El primer movimiento del usuario debe ser login (1).");
 
-        // Validar que logout sea después del último login
-        if (dto.MovementType == 0 && lastLogin != null && dto.Date < lastLogin.Date)
-            throw new InvalidOperationException("La fecha del logout no puede ser anterior al último login");
+            return null;
+        }
+
+        if (dto.Date < lastLogin.Date)
+            return (nameof(LoginDto.Date), "La fecha no puede ser anterior al ultimo movimiento registrado.");
+
+        if (dto.MovementType == lastLogin.MovementType)
+        {
+            var message = dto.MovementType == 1
+                ? "No puede registrar login consecutivo; primero debe registrar logout (0)."
+                : "No puede registrar logout consecutivo; primero debe registrar login (1).";
+
+            return (nameof(LoginDto.MovementType), message);
+        }
+
+        return null;
     }
 }

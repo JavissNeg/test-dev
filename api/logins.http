@@ -11,7 +11,7 @@ Content-Type: application/json
   "userId": 1,
   "extension": 100,
   "movementType": 1,
-  "date": "2026-04-26T10:00:00"
+  "date": "2026-04-20T10:00:00"
 }
 
 ### POST new logout
@@ -22,7 +22,7 @@ Content-Type: application/json
   "userId": 1,
   "extension": 100,
   "movementType": 0,
-  "date": "2026-04-26T18:00:00"
+  "date": "2026-04-20T18:00:00"
 }
 
 ### PUT update login

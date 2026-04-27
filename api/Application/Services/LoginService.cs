@@ -1,13 +1,13 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using TestDevBackJR.Application.DTOs;
 using TestDevBackJR.Application.Interfaces;
-using TestDevBackJR.Application.Validators;
 using TestDevBackJR.Domain.Entities;
 using TestDevBackJR.Infrastructure.Data;
 
 namespace TestDevBackJR.Application.Services;
 
-public class LoginService(AppDbContext context, LoginValidator validator) : ILoginService
+public class LoginService(AppDbContext context, IValidator<LoginDto> validator) : ILoginService
 {
     public async Task<IEnumerable<Login>> GetAll()
     {
@@ -18,7 +18,9 @@ public class LoginService(AppDbContext context, LoginValidator validator) : ILog
 
     public async Task<Login> Create(LoginDto dto)
     {
-        await validator.Validate(dto);
+        var result = await validator.ValidateAsync(dto);
+        if (!result.IsValid)
+            throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.ErrorMessage)));
 
         var login = new Login
         {
@@ -40,7 +42,12 @@ public class LoginService(AppDbContext context, LoginValidator validator) : ILog
         if (login == null)
             return false;
 
-        await validator.Validate(dto, id);
+        var validationContext = new ValidationContext<LoginDto>(dto);
+        validationContext.RootContextData["ExcludeId"] = id;
+
+        var result = await validator.ValidateAsync(validationContext);
+        if (!result.IsValid)
+            throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.ErrorMessage)));
 
         login.UserId = dto.UserId;
         login.Extension = dto.Extension;

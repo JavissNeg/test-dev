@@ -1,4 +1,3 @@
-using TestDevBackJR.Application.Validators;
 using TestDevBackJR.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,7 +7,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
 
 builder.Services.AddApplicationServices();
-builder.Services.AddScoped<LoginValidator>();
+builder.Services.AddApplicationValidators();
 
 var app = builder.Build();
 
