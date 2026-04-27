@@ -27,10 +27,14 @@ public class User
     public string SecondLastName { get; set; }
 
     [Required]
+    [ForeignKey(nameof(UserType))]
     public int UserTypeId { get; set; }
+    public UserType UserType { get; set; }
 
     [Required]
-    public int Status { get; set; }
+    [ForeignKey(nameof(UserStatus))]
+    public int UserStatusId { get; set; }
+    public UserStatus UserStatus { get; set; }
 
     [Required]
     [ForeignKey(nameof(Area))]

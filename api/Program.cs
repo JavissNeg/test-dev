@@ -3,12 +3,10 @@ using TestDevBackJR.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllerConfiguration();
 builder.Services.AddOpenApi();
 builder.Services.AddDatabaseConfiguration(builder.Configuration);
 
-// Register application services
 builder.Services.AddApplicationServices();
 builder.Services.AddScoped<LoginValidator>();
 

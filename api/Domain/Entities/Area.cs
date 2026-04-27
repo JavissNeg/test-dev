@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TestDevBackJR.Domain.Entities;
 
@@ -11,7 +12,9 @@ public class Area
     public string Name { get; set; }
 
     [Required]
-    public int Status { get; set; }
+    [ForeignKey(nameof(AreaStatus))]
+    public int AreaStatusId { get; set; }
+    public AreaStatus AreaStatus { get; set; }
 
     [Required]
     public DateTime CreatedAt { get; set; }

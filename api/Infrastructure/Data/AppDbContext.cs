@@ -8,12 +8,38 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<User> Users { get; set; }
     public DbSet<Login> Logins { get; set; }
     public DbSet<Area> Areas { get; set; }
+    public DbSet<UserStatus> UserStatuses { get; set; }
+    public DbSet<UserType> UserTypes { get; set; }
+    public DbSet<AreaStatus> AreaStatuses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // User relationships and cascade behavior
+        modelBuilder.Entity<UserStatus>()
+            .HasKey(us => us.Id);
+        modelBuilder.Entity<UserStatus>()
+            .HasMany(us => us.Users)
+            .WithOne(u => u.UserStatus)
+            .HasForeignKey(u => u.UserStatusId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserType>()
+            .HasKey(ut => ut.Id);
+        modelBuilder.Entity<UserType>()
+            .HasMany(ut => ut.Users)
+            .WithOne(u => u.UserType)
+            .HasForeignKey(u => u.UserTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<AreaStatus>()
+            .HasKey(ast => ast.Id);
+        modelBuilder.Entity<AreaStatus>()
+            .HasMany(ast => ast.Areas)
+            .WithOne(a => a.AreaStatus)
+            .HasForeignKey(a => a.AreaStatusId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.Logins)
             .WithOne(l => l.User)
@@ -26,13 +52,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey(u => u.AreaId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Username collation (case-sensitive)
         modelBuilder.Entity<User>()
             .Property(u => u.Username)
             .UseCollation("Latin1_General_CS_AS");
 
-        // Composite index for queries
         modelBuilder.Entity<Login>()
-            .HasIndex(l => new { l.UserId, l.Date });
+            .HasIndex(l => new { l.UserId, l.Date, l.Id })
+            .IncludeProperties(l => new { l.MovementType });
     }
 }
