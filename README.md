@@ -4,7 +4,7 @@ API REST para gestión de logins y sesiones de usuarios.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Stack tecnológico
 
 - **.NET 10** - Framework backend
 - **Entity Framework Core** - ORM
@@ -15,7 +15,7 @@ API REST para gestión de logins y sesiones de usuarios.
 
 ---
 
-## 📋 Requisitos Previos
+## 📋 Requisitos previos
 
 - .NET 10 SDK
 - Docker o Podman
@@ -54,7 +54,7 @@ API disponible en: `https://localhost:7151`
 
 ---
 
-## 🗄️ Conexión a Base de Datos
+## 🗄️ Conexión a base de datos
 
 | Parámetro | Valor |
 |-----------|-------|
@@ -113,7 +113,7 @@ dotnet test --filter "FullyQualifiedName~LoginsControllerTests.Get_ReturnsOkResu
 
 ---
 
-## 🐳 Orquestación Completa
+## 🐳 Orquestación completa
 
 **Docker:**
 ```bash
