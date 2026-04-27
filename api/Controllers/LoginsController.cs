@@ -91,7 +91,7 @@ public class LoginsController(ILoginService loginService) : ControllerBase
             var report = await loginService.GenerateUserReport();
 
             var csv = new System.Text.StringBuilder();
-            csv.AppendLine("Username,Full Name,Area,Total Hours");
+            csv.AppendLine("Nombre de usuario,Nombre completo,Área,Total de horas trabajadas");
 
             foreach (var row in report)
             {

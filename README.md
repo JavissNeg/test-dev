@@ -96,7 +96,7 @@ Asegúrate que la API esté ejecutándose. Luego:
 curl -k -L https://localhost:7151/logins/export/csv -o user_report.csv
 ```
 
-CSV incluye: Username, Full Name, Área, Total Hours
+CSV incluye: Nombre de usuario, nombre completo, área, total de horas trabajadas
 
 ---
 
